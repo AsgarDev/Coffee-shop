@@ -1,0 +1,16 @@
+# Un fichier .htaccess est une configuration pour Apache (exclusivement)
+# Cette configuration ne vaut que pour le répertoire dans lequel elle se trouve et les enfants de ce répertoire
+
+RewriteEngine On
+
+# dynamically setup base URI
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+RewriteRule ^(.*) - [E=BASE_URI:%1]
+
+# redirect every request to index.php
+# and give the relative URL in "_url" GET param
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+# Cette ligne dit à Apache que peut importe ce qu'on trouve après la racine de notre site dans l'URL, on pointe vers index.php.
+# On récupère toute la chaîne de caractères APRES le chemin vers ce répertoire dans un paramètre GET _url
+RewriteRule ^(.*)$ index.php?_url=/$1 [QSA,L]
